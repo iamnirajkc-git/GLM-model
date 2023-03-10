@@ -1,0 +1,55 @@
+---
+title: "GLM Model in mtcars dataset"
+author: "Niraj"
+date: "2023-03-10"
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+# GLM model is a stastical model that extends the linear regression model to handle non-normality distributed data, including binary, count and categorical response variable.
+```{r}
+data(mtcars)
+```
+
+```{r}
+head(mtcars)
+```
+# Summary of the dataset
+```{r}
+summary(mtcars)
+```
+
+## The variable vs indicates the type of engine a car has, 0 for V-shaped, and 1 for straight. This will be our response variable. We want to create a model that helps us to predict the probability of a vehicle having a V-shaped engine or a straight engine. In order to do this, we’ll use two predictors, wt (Weight — 1000 lbs) and disp (Displacement — cubic inches)
+create the model
+
+```{r}
+glm1 <- glm(formula= vs ~ wt + disp, data=mtcars, family=binomial)
+```
+
+# Summary of the model
+```{r}
+summary(glm1)
+```
+# Quality of Fit Metrics
+##  ways to determine the quality of fit for a GLM .
+## Deviance —  Null deviance and Residual deviance. 
+## Deviance is a quality of fit measurement for a GLM where larger values indicate a poorer fit. 
+## The Null deviance shows how well the response variable is predicted by a model that includes only the intercept (grand mean of all the groups). For our example, we have a value of 43.9 on 31 degrees of freedom. Subsequently including the independent variables, wt and disp, serve to decrease the deviance to 21.4 on 29 degrees of freedom, a significant reduction in deviance. Similarly, the Residual deviance has reduced by 22.46 with a loss of two degrees of freedom.
+## Fisher Scoring —  The line in the GLM output shows how many iterations it took to complete the process (convergence). For glm1 we see that Fisher Scoring needed six iterations to perform the fit.
+## The Akaike Information Criterion (AIC) — It’s based on the Deviance metric, but penalizes you for making the model more complicated. Much like adjusted R-squared,  So it’s useful for comparing models, but isn’t interpretable on its own.
+## Hosmer-Lemeshow — The glm1 model appears to fit well because there is no significant difference between the model and the observed data (i.e. the p-value is above 0.05). As with other model fit metrics, we can use this test as just one piece of information in deciding how well the model fits. It doesn’t work well in very large or very small data sets but is often useful nevertheless.
+
+## predict vs given a weight of 3,000 lbs. and engine displacement of 150 cubic inches
+
+```{r}
+newdata = data.frame(wt = 3.0, disp = 150)
+```
+
+```{r}
+predict(glm1, newdata, type="response")
+```
+
+# The predicted probability is ~ 79% i.e. engine will be straight shape.
+
+# The End
